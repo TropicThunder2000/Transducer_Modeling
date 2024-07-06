@@ -56,5 +56,34 @@ LowerCutOff = Lm.lowerCutOff
 
 TheilesmallParams = Lm.parameters
 
-%% Plot
-%%
+%% Frequency Plot
+f = 20:20000;
+w = 2*pi*f;
+s = j*w;
+gain= rho0*BL / (2*pi*Sd*Re*TheilesmallParams.Ma);
+
+LPF = 1 ./ (1+(s / HighFreqSol));
+
+ws = 2*pi*TheilesmallParams.fs;
+HPF = (s/ws).^2./((s/ws).^2+(1/Qts)*(s/ws)+1);
+
+p = gain .* HPF .* LPF;
+
+figure(1)
+semilogx(f,db(gain*ones(size(f))),'--');
+hold on;
+semilogx(f,db(abs(HPF)),'--');
+semilogx(f,db(abs(LPF)),'--');
+semilogx(f,db(abs(p)),'LineWidth',2);
+grid on;
+xlabel('Frequency (Hz)')
+ylabel('Gain (dB)')
+title('Frequency Response')
+
+%% Phase Response
+figure(2)
+plot(f,angle(p),'LineWidth',2);
+grid on;
+xlabel('Frequency (Hz)')
+ylabel('Degrees)')
+title('Phase Response')
